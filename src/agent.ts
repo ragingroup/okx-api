@@ -1,7 +1,7 @@
 import https from 'node:https';
 import http from 'node:http';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import type { AxiosRequestConfig } from 'axios';
+import  { AxiosInstance } from 'axios';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
@@ -9,7 +9,7 @@ type SocksAgent = InstanceType<typeof SocksProxyAgent>;
 type Agent= InstanceType<typeof SocksProxyAgent> |  InstanceType<typeof HttpProxyAgent> |  InstanceType<typeof HttpsProxyAgent>;
 interface AgentSocket {
   ip?: string;
-  port: number;
+  port: number|string;
 }
 
 const getAgent = (agentSocket: AgentSocket,protocol:'http'|'https'|'socks'="http"): Agent => {
@@ -35,7 +35,7 @@ const setGloabAgent = (agentSocket: AgentSocket) => {
 };
 // @ts-ignore
 const setAxiosAgent = (
-  axiosRequestConfig: AxiosRequestConfig,
+  axiosRequestConfig: any ,
   agentSocket: AgentSocket
 ) => {
  

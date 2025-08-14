@@ -1,14 +1,4 @@
-import { RestClient } from '../src/index';
-import {setGloabAgent,getAgent,setAxiosAgent} from "../src/agent"
-
-// or
-// import { RestClient } from 'okx-api';
-const socket={
-  ip:"127.0.0.1",
-  port:15236
-}
-setGloabAgent(socket)
-const client = new RestClient(null,"demo",{},setAxiosAgent({},socket));
+import {okxClient as client} from "./init"
 
 /**
  * This is a simple script wrapped in a immediately invoked function expression, designed to make public API calls without credentials
