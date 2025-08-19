@@ -1,3 +1,15 @@
+/**
+ * REST API客户端基类
+ * 
+ * 提供OKX REST API的基础功能，包括：
+ * - HTTP请求处理
+ * - 认证签名
+ * - 错误处理
+ * - 请求配置管理
+ * 
+ * 这是一个抽象基类，具体的API客户端应该继承此类
+ */
+
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 import https from 'https';
 
@@ -33,29 +45,78 @@ import { isRawAPIResponse } from './typeGuards';
 //   return response;
 // });
 
+/**
+ * 缺少凭证错误消息
+ * 当私有端点需要API凭证但未提供时抛出
+ */
 export const MISSING_CREDENTIALS_ERROR =
   'Private endpoints require api and secret to be provided in the REST client constructor';
 
+/**
+ * 签名请求接口
+ * 
+ * @template T - 请求体类型
+ */
 interface SignedRequest<T> {
+  /** 请求体数据 */
   requestBody: T | undefined;
+  /** HTTP方法 */
   method: Method;
+  /** API端点 */
   endpoint: string;
+  /** 签名 */
   sign: string;
 }
 
+/**
+ * REST API客户端基类
+ * 
+ * 提供统一的REST API调用接口，包括认证、请求处理和响应解析
+ * 
+ * 主要功能：
+ * - 管理API凭证和配置
+ * - 处理HTTP请求和响应
+ * - 实现请求签名认证
+ * - 提供统一的错误处理
+ * 
+ * 使用方式：
+ * class MyRestClient extends BaseRestClient {
+ *   constructor(options: RestClientOptions) {
+ *     super(options);
+ *   }
+ *   
+ *   async getAccountBalance() {
+ *     return this.getPrivate('/api/v5/account/balance');
+ *   }
+ * }
+ */
 export default abstract class BaseRestClient {
+  /** 客户端配置选项 */
   private options: RestClientOptions;
 
+  /** API基础URL */
   private baseUrl: string;
 
+  /** 全局请求配置 */
   private globalRequestOptions: AxiosRequestConfig;
 
+  /** API密钥 */
   private apiKey: string | undefined;
 
+  /** API密钥对应的密钥 */
   private apiSecret: string | undefined;
 
+  /** API密码 */
   private apiPassphrase: string | undefined;
 
+  /**
+   * 构造函数
+   * 
+   * @param options - REST客户端配置选项
+   * @param requestOptions - Axios请求配置选项
+   * 
+   * @throws {Error} 当提供部分凭证但未提供全部凭证时
+   */
   constructor(
     options: RestClientOptions = {},
     requestOptions: AxiosRequestConfig = {},
@@ -123,18 +184,50 @@ export default abstract class BaseRestClient {
     this.apiPassphrase = options?.apiPass;
   }
 
+  /**
+   * 发送GET请求到公共端点
+   * 
+   * @param endpoint - API端点路径
+   * @param params - 查询参数
+   * @returns Promise<any> - API响应数据
+   */
   public get(endpoint: string, params?: any) {
     return this._call('GET', endpoint, params, true);
   }
 
+  /**
+   * 发送POST请求到公共端点
+   * 
+   * @param endpoint - API端点路径
+   * @param params - 请求体参数
+   * @returns Promise<any> - API响应数据
+   */
   public post(endpoint: string, params?: any) {
     return this._call('POST', endpoint, params, true);
   }
 
+  /**
+   * 发送GET请求到私有端点（需要认证）
+   * 
+   * @param endpoint - API端点路径
+   * @param params - 查询参数
+   * @returns Promise<any> - API响应数据
+   * 
+   * @throws {Error} 当缺少API凭证时
+   */
   public getPrivate(endpoint: string, params?: any) {
     return this._call('GET', endpoint, params, false);
   }
 
+  /**
+   * 发送POST请求到私有端点（需要认证）
+   * 
+   * @param endpoint - API端点路径
+   * @param params - 请求体参数
+   * @returns Promise<any> - API响应数据
+   * 
+   * @throws {Error} 当缺少API凭证时
+   */
   public postPrivate(endpoint: string, params?: any) {
     return this._call(
       'POST',
@@ -146,12 +239,31 @@ export default abstract class BaseRestClient {
     );
   }
 
+  /**
+   * 发送DELETE请求到私有端点（需要认证）
+   * 
+   * @param endpoint - API端点路径
+   * @param params - 请求体参数
+   * @returns Promise<any> - API响应数据
+   * 
+   * @throws {Error} 当缺少API凭证时
+   */
   public deletePrivate(endpoint: string, params?: any) {
     return this._call('DELETE', endpoint, params, false);
   }
 
   /**
-   * Make a HTTP request to a specific endpoint. Private endpoints are automatically signed.
+   * 向特定端点发送HTTP请求
+   * 
+   * 私有端点会自动进行签名认证
+   * 
+   * @param method - HTTP方法（GET、POST、DELETE等）
+   * @param endpoint - API端点路径
+   * @param params - 请求参数
+   * @param isPublicApi - 是否为公共API（true为公共，false为私有）
+   * @returns Promise<any> - API响应数据
+   * 
+   * @private
    */
   private async _call(
     method: Method,
@@ -240,7 +352,21 @@ export default abstract class BaseRestClient {
   }
 
   /**
-   * Sign request
+   * 签名请求
+   * 
+   * 为私有API请求生成数字签名，确保请求的完整性和认证性
+   * 
+   * @template T - 请求参数类型
+   * @param isPublicApi - 是否为公共API
+   * @param tsISO - ISO格式的时间戳
+   * @param method - HTTP方法
+   * @param endpoint - API端点
+   * @param params - 请求参数
+   * @returns Promise<SignedRequest<T>> - 包含签名的请求对象
+   * 
+   * @throws {Error} 当缺少API凭证时
+   * 
+   * @private
    */
   private async signRequest<T extends object>(
     isPublicApi: boolean,
@@ -283,7 +409,14 @@ export default abstract class BaseRestClient {
   }
 
   /**
-   * Generic handler to parse request exceptions
+   * 通用异常解析处理器
+   * 
+   * 解析请求过程中产生的各种异常，包括网络错误、API错误等
+   * 
+   * @param e - 异常对象
+   * @returns unknown - 解析后的异常信息
+   * 
+   * @private
    */
   private parseException(e: any): unknown {
     if (this.options.parse_exceptions === false) {

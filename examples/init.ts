@@ -9,10 +9,14 @@ const socket={
 
 setGloabAgent(socket)
 const okxClient = new RestClient({
-  apiKey:process.env.apiKey,
-  apiPass:process.env.apiPass,
-  apiSecret:process.env.apiSecret
+  // apiKey:process.env.apiKey,
+  // apiPass:process.env.apiPass,
+  // apiSecret:process.env.apiSecret
 
-},"prod",{},setAxiosAgent({},socket));
+  apiKey:process.env.mockApiKey,
+  apiPass:process.env.apiPass,
+  apiSecret:process.env.mockApiSecret
+
+},"demo",{},setAxiosAgent({},socket));
 
 export {okxClient}

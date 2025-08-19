@@ -1,38 +1,5 @@
 import { OrderRequest, RestClient } from '../src/index';
-
-// or
-// import { RestClient, OrderRequest } from 'okx-api';
-
-// read from environmental variables
-const API_KEY = process.env.API_KEY_COM;
-const API_SECRET = process.env.API_SECRET_COM;
-const API_PASS = process.env.API_PASSPHRASE_COM;
-
-// If running from CLI in unix, you can pass env vars as such:
-// API_KEY_COM='lkm12n3-2ba3-1mxf-fn13-lkm12n3a' API_SECRET_COM='035B2B9637E1BDFFEE2646BFBDDB8CE4' API_PASSPHRASE_COM='ComplexPa$$!23$5^' ts-node examples/rest-private-trade-market.ts
-
-// note the single quotes, preventing special characters such as $ from being incorrectly passed
-
-if (!API_KEY || !API_SECRET || !API_PASS) {
-  throw new Error(
-    'Missing api credentials. Use environmental variables or hard code in the script',
-  );
-}
-
-console.log(new Date(), 'Using credentials: ', {
-  API_KEY,
-  API_SECRET,
-  API_PASS,
-});
-
-const client = new RestClient({
-  apiKey: API_KEY,
-  // apiKey: 'apiKeyHere',
-  apiSecret: API_SECRET,
-  // apiSecret: 'apiSecretHere',
-  apiPass: API_PASS,
-  // apiPass: 'apiPassHere',
-});
+import {okxClient as client} from "./init"
 
 /** Get available balance for an asset */
 async function getAssetBalance(

@@ -1,103 +1,148 @@
+/**
+ * WebSocket请求类型定义
+ * 
+ * 定义WebSocket连接中的各种请求参数和频道类型
+ */
+
+/**
+ * WebSocket认证请求参数接口
+ * 
+ * 用于WebSocket私有频道的身份验证
+ */
 export interface WsAuthRequestArg {
+  /** API密钥 */
   apiKey: string;
+  /** API密码 */
   passphrase: string;
+  /** 时间戳 */
   timestamp: string;
+  /** 签名 */
   sign: string;
 }
 
+/**
+ * WebSocket交易操作类型
+ * 
+ * 定义可用的交易操作
+ */
 export type WsTradeOp =
-  | 'order'
-  | 'batch-orders'
-  | 'cancel-order'
-  | 'batch-cancel-orders'
-  | 'amend-order'
-  | 'batch-amend-order';
+  | 'order'                    // 下单
+  | 'batch-orders'            // 批量下单
+  | 'cancel-order'            // 撤单
+  | 'batch-cancel-orders'     // 批量撤单
+  | 'amend-order'             // 改单
+  | 'batch-amend-order';      // 批量改单
 
+/**
+ * WebSocket请求操作类型
+ * 
+ * 定义WebSocket连接的基本操作
+ */
 export type WsRequestOp = 'login' | 'subscribe' | 'unsubscribe';
 
+/**
+ * WebSocket私有频道类型
+ * 
+ * 需要认证的私有频道，用于获取账户相关信息
+ */
 export type WsPrivateChannel =
-  | 'account'
-  | 'positions'
-  | 'balance_and_position'
-  | 'orders'
-  | 'orders-algo'
-  | 'algo-advance'
-  | 'liquidation-warning'
-  | 'account-greeks'
-  | 'grid-orders-spot'
-  | 'grid-orders-contract'
-  | 'grid-orders-moon'
-  | 'grid-positions'
-  | 'grid-sub-orders';
+  | 'account'                 // 账户信息
+  | 'positions'               // 持仓信息
+  | 'balance_and_position'    // 余额和持仓
+  | 'orders'                  // 订单信息
+  | 'orders-algo'             // 算法订单
+  | 'algo-advance'            // 高级算法订单
+  | 'liquidation-warning'     // 强平预警
+  | 'account-greeks'          // 账户希腊字母
+  | 'grid-orders-spot'        // 现货网格订单
+  | 'grid-orders-contract'    // 合约网格订单
+  | 'grid-orders-moon'        // 月球网格订单
+  | 'grid-positions'          // 网格持仓
+  | 'grid-sub-orders';        // 网格子订单
 
+/**
+ * WebSocket公共K线频道类型
+ * 
+ * 用于订阅不同时间周期的K线数据
+ */
 export type WsPublicKlineChannel =
-  | 'candle1Y'
-  | 'candle6M'
-  | 'candle3M'
-  | 'candle1M'
-  | 'candle1W'
-  | 'candle1D'
-  | 'candle2D'
-  | 'candle3D'
-  | 'candle5D'
-  | 'candle12H'
-  | 'candle6H'
-  | 'candle4H'
-  | 'candle2H'
-  | 'candle1H'
-  | 'candle30m'
-  | 'candle15m'
-  | 'candle5m'
-  | 'candle3m'
-  | 'candle1m'
-  | 'candle1s'
-  | 'candle1Yutc'
-  | 'candle3Mutc'
-  | 'candle1Mutc'
-  | 'candle1Wutc'
-  | 'candle1Dutc'
-  | 'candle2Dutc'
-  | 'candle3Dutc'
-  | 'candle5Dutc'
-  | 'candle12Hutc'
-  | 'candle6Hutc';
+  | 'candle1Y'                // 1年K线
+  | 'candle6M'                // 6个月K线
+  | 'candle3M'                // 3个月K线
+  | 'candle1M'                // 1个月K线
+  | 'candle1W'                // 1周K线
+  | 'candle1D'                // 1天K线
+  | 'candle2D'                // 2天K线
+  | 'candle3D'                // 3天K线
+  | 'candle5D'                // 5天K线
+  | 'candle12H'               // 12小时K线
+  | 'candle6H'                // 6小时K线
+  | 'candle4H'                // 4小时K线
+  | 'candle2H'                // 2小时K线
+  | 'candle1H'                // 1小时K线
+  | 'candle30m'               // 30分钟K线
+  | 'candle15m'               // 15分钟K线
+  | 'candle5m'                // 5分钟K线
+  | 'candle3m'                // 3分钟K线
+  | 'candle1m'                // 1分钟K线
+  | 'candle1s'                // 1秒K线
+  | 'candle1Yutc'             // 1年K线（UTC时间）
+  | 'candle3Mutc'             // 3个月K线（UTC时间）
+  | 'candle1Mutc'             // 1个月K线（UTC时间）
+  | 'candle1Wutc'             // 1周K线（UTC时间）
+  | 'candle1Dutc'             // 1天K线（UTC时间）
+  | 'candle2Dutc'             // 2天K线（UTC时间）
+  | 'candle3Dutc'             // 3天K线（UTC时间）
+  | 'candle5Dutc'             // 5天K线（UTC时间）
+  | 'candle12Hutc'            // 12小时K线（UTC时间）
+  | 'candle6Hutc';            // 6小时K线（UTC时间）
 
+/**
+ * WebSocket公共标记价格K线频道类型
+ * 
+ * 用于订阅标记价格的K线数据
+ */
 export type WsPublicMarkPriceKlineChannel =
-  | 'mark-price-candle1Y'
-  | 'mark-price-candle6M'
-  | 'mark-price-candle3M'
-  | 'mark-price-candle1M'
-  | 'mark-price-candle1W'
-  | 'mark-price-candle1D'
-  | 'mark-price-candle2D'
-  | 'mark-price-candle3D'
-  | 'mark-price-candle5D'
-  | 'mark-price-candle12H'
-  | 'mark-price-candle6H'
-  | 'mark-price-candle4H'
-  | 'mark-price-candle2H'
-  | 'mark-price-candle1H'
-  | 'mark-price-candle30m'
-  | 'mark-price-candle15m'
-  | 'mark-price-candle5m'
-  | 'mark-price-candle3m'
-  | 'mark-price-candle1m'
-  | 'mark-price-candle1Yutc'
-  | 'mark-price-candle3Mutc'
-  | 'mark-price-candle1Mutc'
-  | 'mark-price-candle1Wutc'
-  | 'mark-price-candle1Dutc'
-  | 'mark-price-candle2Dutc'
-  | 'mark-price-candle3Dutc'
-  | 'mark-price-candle5Dutc'
-  | 'mark-price-candle12Hutc'
-  | 'mark-price-candle6Hutc';
+  | 'mark-price-candle1Y'     // 标记价格1年K线
+  | 'mark-price-candle6M'     // 标记价格6个月K线
+  | 'mark-price-candle3M'     // 标记价格3个月K线
+  | 'mark-price-candle1M'     // 标记价格1个月K线
+  | 'mark-price-candle1W'     // 标记价格1周K线
+  | 'mark-price-candle1D'     // 标记价格1天K线
+  | 'mark-price-candle2D'     // 标记价格2天K线
+  | 'mark-price-candle3D'     // 标记价格3天K线
+  | 'mark-price-candle5D'     // 标记价格5天K线
+  | 'mark-price-candle12H'    // 标记价格12小时K线
+  | 'mark-price-candle6H'     // 标记价格6小时K线
+  | 'mark-price-candle4H'     // 标记价格4小时K线
+  | 'mark-price-candle2H'     // 标记价格2小时K线
+  | 'mark-price-candle1H'     // 标记价格1小时K线
+  | 'mark-price-candle30m'    // 标记价格30分钟K线
+  | 'mark-price-candle15m'    // 标记价格15分钟K线
+  | 'mark-price-candle5m'     // 标记价格5分钟K线
+  | 'mark-price-candle3m'     // 标记价格3分钟K线
+  | 'mark-price-candle1m'     // 标记价格1分钟K线
+  | 'mark-price-candle1Yutc'  // 标记价格1年K线（UTC时间）
+  | 'mark-price-candle3Mutc'  // 标记价格3个月K线（UTC时间）
+  | 'mark-price-candle1Mutc'  // 标记价格1个月K线（UTC时间）
+  | 'mark-price-candle1Wutc'  // 标记价格1周K线（UTC时间）
+  | 'mark-price-candle1Dutc'  // 标记价格1天K线（UTC时间）
+  | 'mark-price-candle2Dutc'  // 标记价格2天K线（UTC时间）
+  | 'mark-price-candle3Dutc'  // 标记价格3天K线（UTC时间）
+  | 'mark-price-candle5Dutc'  // 标记价格5天K线（UTC时间）
+  | 'mark-price-candle12Hutc' // 标记价格12小时K线（UTC时间）
+  | 'mark-price-candle6Hutc'; // 标记价格6小时K线（UTC时间）
 
+/**
+ * WebSocket公共指数K线频道类型
+ * 
+ * 用于订阅指数K线数据
+ */
 export type WsPublicIndexKlineChannel =
-  | 'index-candle1Y'
-  | 'index-candle6M'
-  | 'index-candle3M'
-  | 'index-candle1M'
+  | 'index-candle1Y'          // 指数1年K线
+  | 'index-candle6M'          // 指数6个月K线
+  | 'index-candle3M'          // 指数3个月K线
+  | 'index-candle1M'          // 指数1个月K线
   | 'index-candle1W'
   | 'index-candle1D'
   | 'index-candle2D'

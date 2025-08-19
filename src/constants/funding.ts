@@ -1,139 +1,285 @@
 /**
- * Asset bill type, auto-generated using table from funding asset bill details:
- * https://www.okx.com/docs-v5/en/#rest-api-funding-asset-bills-details
+ * 资金账单类型常量定义
+ * 
+ * 这些常量定义了OKX平台中各种资金操作的类型，包括：
+ * - 存款、提现、转账等基础操作
+ * - 质押、挖矿、投资等高级功能
+ * - 系统操作和奖励发放
+ * 
+ * 数据来源：https://www.okx.com/docs-v5/en/#rest-api-funding-asset-bills-details
+ * 
+ * 使用方式：
+ * import { ASSET_BILL_TYPE } from 'okx-api';
+ * 
+ * // 检查是否为存款操作
+ * if (billType === ASSET_BILL_TYPE.DEPOSIT) {
+ *   // 处理存款逻辑
+ * }
  */
 export enum ASSET_BILL_TYPE {
+  /** 存款 */
   DEPOSIT = '1',
+  /** 提现 */
   WITHDRAWAL = '2',
+  /** 取消提现 */
   CANCELED_WITHDRAWAL = '13',
+  /** 转出到子账户 */
   TRANSFER_TO_SUB_ACCOUNT = '20',
+  /** 从子账户转入 */
   TRANSFER_FROM_SUB_ACCOUNT = '21',
+  /** 认领 */
   CLAIM = '28',
+  /** 系统冲正 */
   SYSTEM_REVERSAL = '47',
+  /** 活动获得 */
   RECEIVED_FROM_ACTIVITIES = '48',
+  /** 活动送出 */
   GIVEN_AWAY_TO_ACTIVITIES = '49',
+  /** 预约获得 */
   RECEIVED_FROM_APPOINTMENTS = '50',
+  /** 预约扣除 */
   DEDUCTED_FROM_APPOINTMENTS = '51',
+  /** 红包发送 */
   RED_PACKET_SENT = '52',
+  /** 红包抢到 */
   RED_PACKET_SNATCHED = '53',
+  /** 红包退回 */
   RED_PACKET_REFUNDED = '54',
+  /** 兑换 */
   CONVERSION = '61',
+  /** 认领返佣卡 */
   CLAIM_REBATE_CARD = '68',
+  /** 发放返佣卡 */
   DISTRIBUTE_REBATE_CARD = '69',
+  /** 代币获得 */
   TOKEN_RECEIVED = '72',
+  /** 代币送出 */
   TOKEN_GIVEN_AWAY = '73',
+  /** 代币退回 */
   TOKEN_REFUNDED = '74',
+  /** 申购活期 */
   SUBSCRIPTION_TO_SAVINGS = '75',
+  /** 赎回活期 */
   REDEMPTION_TO_SAVINGS = '76',
+  /** 发放 */
   DISTRIBUTE = '77',
+  /** 锁仓 */
   LOCK_UP = '78',
+  /** 节点投票 */
   NODE_VOTING = '79',
+  /** 质押1 */
   STAKING_1 = '80',
+  /** 投票赎回 */
   VOTE_REDEMPTION = '81',
+  /** 质押赎回1 */
   STAKING_REDEMPTION_1 = '82',
+  /** 质押收益 */
   STAKING_YIELD = '83',
+  /** 违规费 */
   VIOLATION_FEE = '84',
+  /** PoW挖矿收益 */
   POW_MINING_YIELD = '85',
+  /** 云挖矿支付 */
   CLOUD_MINING_PAY = '86',
+  /** 云挖矿收益 */
   CLOUD_MINING_YIELD = '87',
+  /** 补贴 */
   SUBSIDY = '88',
+  /** 质押2 */
   STAKING_2 = '89',
+  /** 质押申购 */
   STAKING_SUBSCRIPTION = '90',
+  /** 质押赎回2 */
   STAKING_REDEMPTION_2 = '91',
+  /** 追加保证金 */
   ADD_COLLATERAL = '92',
+  /** 赎回保证金 */
   REDEEM_COLLATERAL = '93',
+  /** 投资 */
   INVESTMENT = '94',
+  /** 借款人借款 */
   BORROWER_BORROWS = '95',
+  /** 本金转入 */
   PRINCIPAL_TRANSFERRED_IN = '96',
+  /** 借款人转出贷款 */
   BORROWER_TRANSFERRED_LOAN_OUT = '97',
+  /** 借款人转出利息 */
   BORROWER_TRANSFERRED_INTEREST_OUT = '98',
+  /** 投资者转入利息 */
   INVESTOR_TRANSFERRED_INTEREST_IN = '99',
+  /** 提前还款罚金转入 */
   PREPAYMENT_PENALTY_TRANSFERRED_IN = '102',
+  /** 提前还款罚金转出 */
   PREPAYMENT_PENALTY_TRANSFERRED_OUT = '103',
+  /** 手续费转入 */
   FEE_TRANSFERRED_IN = '104',
+  /** 手续费转出 */
   FEE_TRANSFERRED_OUT = '105',
+  /** 逾期费转入 */
   OVERDUE_FEE_TRANSFERRED_IN = '106',
+  /** 逾期费转出 */
   OVERDUE_FEE_TRANSFERRED_OUT = '107',
+  /** 逾期利息转出 */
   OVERDUE_INTEREST_TRANSFERRED_OUT = '108',
+  /** 逾期利息转入 */
   OVERDUE_INTEREST_TRANSFERRED_IN = '109',
+  /** 平仓保证金转入 */
   COLLATERAL_FOR_CLOSED_POSITION_TRANSFERRED_IN = '110',
+  /** 平仓保证金转出 */
   COLLATERAL_FOR_CLOSED_POSITION_TRANSFERRED_OUT = '111',
+  /** 强平保证金转入 */
   COLLATERAL_FOR_LIQUIDATION_TRANSFERRED_IN = '112',
+  /** 强平保证金转出 */
   COLLATERAL_FOR_LIQUIDATION_TRANSFERRED_OUT = '113',
+  /** 保险基金转入 */
   INSURANCE_FUND_TRANSFERRED_IN = '114',
+  /** 保险基金转出 */
   INSURANCE_FUND_TRANSFERRED_OUT_ = '115',
+  /** 下单 */
   PLACE_AN_ORDER = '116',
+  /** 成交 */
   FULFILL_AN_ORDER = '117',
+  /** 撤单 */
   CANCEL_AN_ORDER = '118',
+  /** 商家解锁保证金 */
   MERCHANTS_UNLOCK_DEPOSIT = '119',
+  /** 商家追加保证金 */
   MERCHANTS_ADD_DEPOSIT = '120',
+  /** 法币网关下单 */
   FIATGATEWAY_PLACE_AN_ORDER = '121',
+  /** 法币网关撤单 */
   FIATGATEWAY_CANCEL_AN_ORDER = '122',
+  /** 法币网关成交 */
   FIATGATEWAY_FULFILL_AN_ORDER = '123',
+  /** Jumpstart解锁 */
   JUMPSTART_UNLOCKING = '124',
+  /** 手动充值 */
   MANUAL_DEPOSIT = '125',
+  /** 利息充值 */
   INTEREST_DEPOSIT = '126',
+  /** 投资手续费转入 */
   INVESTMENT_FEE_TRANSFERRED_IN = '127',
+  /** 投资手续费转出 */
   INVESTMENT_FEE_TRANSFERRED_OUT = '128',
+  /** 奖励转入 */
   REWARDS_TRANSFERRED_IN = '129',
+  /** 从交易账户转出 */
   TRANSFERRED_FROM_TRADING_ACCOUNT = '130',
+  /** 转入交易账户 */
   TRANSFERRED_TO_TRADING_ACCOUNT = '131',
+  /** 客服冻结 */
   FROZEN_BY_CUSTOMER_SERVICE = '132',
+  /** 客服解冻 */
   UNFROZEN_BY_CUSTOMER_SERVICE = '133',
+  /** 客服转账 */
   TRANSFERRED_BY_CUSTOMER_SERVICE = '134',
+  /** 跨链兑换 */
   CROSS_CHAIN_EXCHANGE = '135',
+  /** 兑换 */
   CONVERT = '136',
+  /** ETH2.0申购 */
   ETH_2_0_SUBSCRIPTION = '137',
+  /** ETH2.0兑换 */
   ETH_2_0_SWAPPING = '138',
+  /** ETH2.0收益 */
   ETH_2_0_EARNINGS = '139',
+  /** 手续费转入 */
   FEE_TRANSFER_IN = '141',
+  /** 手续费转出 */
   FEE_TRANSFER_OUT = '142',
+  /** 系统冲正 */
   SYSTEM_REVERSE = '143',
+  /** 转出统一账户储备 */
   TRANSFER_OUT_OF_UNIFIED_ACCOUNT_RESERVE = '144',
+  /** 奖励过期 */
   REWARD_EXPIRED = '145',
+  /** 客户反馈 */
   CUSTOMER_FEEDBACK = '146',
+  /** 已归属SUSHI奖励 */
   VESTED_SUSHI_REWARDS = '147',
+  /** 推荐佣金 */
   AFFILIATE_COMMISSION = '150',
+  /** 推荐奖励 */
   REFERRAL_REWARD = '151',
+  /** 经纪人奖励 */
   BROKER_REWARD = '152',
+  /** 加入者奖励 */
   JOINER_REWARD = '153',
+  /** 神秘盒奖励 */
   MYSTERY_BOX_REWARD = '154',
+  /** 奖励提现 */
   REWARDS_WITHDRAW = '155',
+  /** 费率返现1 */
   FEE_REBATE_1 = '156',
+  /** 已收集加密货币 */
   COLLECTED_CRYPTO = '157',
+  /** 双重投资订阅 */
   DUAL_INVESTMENT_SUBSCRIBE = '160',
+  /** 双重投资收集 */
   DUAL_INVESTMENT_COLLECTION = '161',
+  /** 双重投资利润 */
   DUAL_INVESTMENT_PROFIT = '162',
+  /** 双重投资退款 */
   DUAL_INVESTMENT_REFUND = '163',
+  /** 2022新年奖励 */
   NEW_YEAR_REWARDS_2022 = '169',
+  /** 推荐人推荐客户 */
   REFERRAL_REFERRED_CUSTOMER = '170',
+  /** 推荐人被推荐 */
   REFERRAL_WAS_REFERRED = '171',
+  /** 子推荐人佣金 */
   SUB_AFFILIATE_COMMISSION = '172',
+  /** 费率返现2 */
   FEE_REBATE_2 = '173',
+  /** 支付 */
   PAY = '174',
+  /** 锁定保证金 */
   LOCKED_COLLATERAL = '175',
+  /** 贷款 */
   LOAN = '176',
+  /** 添加保证金 */
   ADDED_COLLATERAL = '177',
+  /** 返还保证金 */
   RETURNED_COLLATERAL = '178',
+  /** 还款 */
   REPAYMENT = '179',
+  /** 解锁保证金 */
   UNLOCKED_COLLATERAL = '180',
+  /** 退还加密货币 */
   REPAY_AIRDROPPED_CRYPTO = '181',
+  /** 反馈悬赏 */
   FEEDBACK_BOUNTY = '182',
+  /** 邀请好友奖励 */
   INVITE_FRIENDS_REWARDS = '183',
+  /** 分配奖励池 */
   DIVIDE_THE_REWARD_POOL = '184',
+  /** 经纪人兑换奖励 */
   BROKER_CONVERT_REWARD = '185',
+  /** 免费ETH */
   FREEETH = '186',
+  /** 兑换转账 */
   CONVERT_TRANSFER = '187',
+  /** 插槽拍卖兑换 */
   SLOT_AUCTION_CONVERSION = '188',
+  /** 神秘盒奖励 */
   MYSTERY_BOX_BONUS = '189',
+  /** 卡支付购买1 */
   CARD_PAYMENT_BUY_1 = '193',
+  /** 卡支付购买2 */
   CARD_PAYMENT_BUY_2 = '194',
+  /** 不可交易资产提现 */
   UNTRADABLE_ASSET_WITHDRAWAL = '195',
+  /** 不可交易资产提现撤销 */
   UNTRADABLE_ASSET_WITHDRAWAL_REVOKED = '196',
+  /** 不可交易资产存入 */
   UNTRADABLE_ASSET_DEPOSIT = '197',
+  /** 不可交易资产收集1 */
   UNTRADABLE_ASSET_COLLECTION_1 = '198',
+  /** 不可交易资产收集2 */
   UNTRADABLE_ASSET_COLLECTION_2 = '199',
+  /** 购买 */
   BUY = '200',
+  /** 用Satoshi赢得加密货币 */
   WIN_CRYPTO_WITH_SATOSHI = '211',
 }
 

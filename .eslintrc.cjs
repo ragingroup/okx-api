@@ -54,5 +54,6 @@ module.exports = {
     'computed-property-spacing': [2, 'never'],
     'keyword-spacing': 2,
     'space-unary-ops': 2,
+    'prettier/prettier': 'off'
   },
 };

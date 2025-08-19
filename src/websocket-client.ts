@@ -108,13 +108,29 @@ export class WebsocketClient extends EventEmitter {
     };
 
     // add default error handling so this doesn't crash node (if the user didn't set a handler)
-    this.on('error', () => {});
+    this.on('error', () => { });
   }
 
   /**
-   * Subscribe to topics & track/persist them. They will be automatically resubscribed to if the connection drops/reconnects.
-   * @param wsEvents topic or list of topics
-   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
+   * 订阅主题并跟踪/持久化它们
+   * 
+   * 如果连接断开/重连，这些主题将自动重新订阅
+   * 
+   * @param wsEvents - 单个主题或主题列表
+   * @param isPrivateTopic - 可选参数，库会尝试检测私有主题，您可以使用此参数标记主题为私有（如果主题尚未被识别）
+   * 
+   * 使用方式：
+   * // 订阅单个主题
+   * wsClient.subscribe({ channel: 'tickers', instId: 'BTC-USDT' });
+   * 
+   * // 订阅多个主题
+   * wsClient.subscribe([
+   *   { channel: 'tickers', instId: 'BTC-USDT' },
+   *   { channel: 'trades', instId: 'ETH-USDT' }
+   * ]);
+   * 
+   * // 标记为私有主题
+   * wsClient.subscribe({ channel: 'account', instId: 'BTC-USDT' }, true);
    */
   public subscribe(
     wsEvents: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
@@ -156,9 +172,22 @@ export class WebsocketClient extends EventEmitter {
   }
 
   /**
-   * Unsubscribe from topics & remove them from memory. They won't be re-subscribed to if the connection reconnects.
-   * @param wsTopics topic or list of topics
-   * @param isPrivateTopic optional - the library will try to detect private topics, you can use this to mark a topic as private (if the topic isn't recognised yet)
+   * 取消订阅主题并从内存中移除它们
+   * 
+   * 如果连接重连，这些主题不会被重新订阅
+   * 
+   * @param wsTopics - 单个主题或主题列表
+   * @param isPrivateTopic - 可选参数，库会尝试检测私有主题，您可以使用此参数标记主题为私有（如果主题尚未被识别）
+   * 
+   * 使用方式：
+   * // 取消订阅单个主题
+   * wsClient.unsubscribe({ channel: 'tickers', instId: 'BTC-USDT' });
+   * 
+   * // 取消订阅多个主题
+   * wsClient.unsubscribe([
+   *   { channel: 'tickers', instId: 'BTC-USDT' },
+   *   { channel: 'trades', instId: 'ETH-USDT' }
+   * ]);
    */
   public unsubscribe(
     wsTopics: WsChannelSubUnSubRequestArg[] | WsChannelSubUnSubRequestArg,
@@ -184,11 +213,21 @@ export class WebsocketClient extends EventEmitter {
     });
   }
 
-  /** Get the WsStore that tracks websocket & topic state */
+  /**
+   * 获取跟踪WebSocket和主题状态的WsStore
+   * 
+   * @returns WsStore<WsChannelSubUnSubRequestArg> - WebSocket存储管理对象
+   */
   public getWsStore(): WsStore<WsChannelSubUnSubRequestArg> {
     return this.wsStore;
   }
 
+  /**
+   * 关闭指定的WebSocket连接
+   * 
+   * @param wsKey - WebSocket连接键值
+   * @param force - 是否强制关闭（使用terminate方法）
+   */
   public close(wsKey: WsKey, force?: boolean) {
     this.logger.info('Closing connection', { ...loggerCategory, wsKey });
     this.wsStore.setConnectionState(wsKey, WsConnectionStateEnum.CLOSING);
@@ -294,8 +333,7 @@ export class WebsocketClient extends EventEmitter {
           WsConnectionStateEnum.CLOSING
         ) {
           this.logger.error(
-            `${context} due to unexpected response error: "${
-              error?.msg || error?.message || error
+            `${context} due to unexpected response error: "${error?.msg || error?.message || error
             }"`,
             { ...loggerCategory, wsKey, error },
           );

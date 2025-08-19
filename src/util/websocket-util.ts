@@ -1,7 +1,32 @@
+/**
+ * WebSocket工具函数模块
+ * 
+ * 提供WebSocket连接相关的工具函数，包括：
+ * - WebSocket URL映射
+ * - 连接键值管理
+ * - 频道类型判断
+ * - 连接状态管理
+ */
+
 import { APIMarket, WebsocketClientOptions, WsChannel } from '../types';
 import { DefaultLogger } from './logger';
 import { neverGuard } from './typeGuards';
 
+/**
+ * WebSocket基础URL映射表
+ * 
+ * 根据不同的市场类型和连接类型（公共/私有）提供相应的WebSocket URL
+ * 
+ * 市场类型说明：
+ * - prod: 生产环境，正式交易
+ * - business: 商业环境
+ * - businessDemo: 商业演示环境
+ * - demo: 演示环境，用于测试
+ * 
+ * 连接类型说明：
+ * - public: 公共连接，用于订阅公开市场数据
+ * - private: 私有连接，用于订阅私有账户数据
+ */
 export const WS_BASE_URL_MAP: Record<
   APIMarket,
   Record<'public' | 'private', string>
@@ -24,6 +49,11 @@ export const WS_BASE_URL_MAP: Record<
   },
 };
 
+/**
+ * WebSocket连接键值映射
+ * 
+ * 用于标识不同类型的WebSocket连接
+ */
 export const WS_KEY_MAP = {
   prodPublic: 'prodPublic',
   prodPrivate: 'prodPrivate',
@@ -35,9 +65,18 @@ export const WS_KEY_MAP = {
   businessDemoPrivate: 'businessDemoPrivate',
 } as const;
 
-/** This is used to differentiate between each of the available websocket streams (as bybit has multiple websockets) */
+/**
+ * WebSocket连接键值类型
+ * 
+ * 这是用于区分不同可用WebSocket流的类型（因为OKX有多个WebSocket）
+ */
 export type WsKey = (typeof WS_KEY_MAP)[keyof typeof WS_KEY_MAP];
 
+/**
+ * 私有WebSocket连接键值列表
+ * 
+ * 需要认证的WebSocket连接
+ */
 export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPrivate,
   WS_KEY_MAP.businessPrivate,
@@ -45,6 +84,11 @@ export const PRIVATE_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.businessDemoPrivate,
 ];
 
+/**
+ * 公共WebSocket连接键值列表
+ * 
+ * 不需要认证的WebSocket连接
+ */
 export const PUBLIC_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.prodPublic,
   WS_KEY_MAP.businessPublic,
@@ -52,7 +96,12 @@ export const PUBLIC_WS_KEYS: WsKey[] = [
   WS_KEY_MAP.businessDemoPublic,
 ];
 
-/** Used to automatically determine if a sub request should be to the public or private ws (when there's two) */
+/**
+ * 私有频道列表
+ * 
+ * 用于自动判断订阅请求应该发送到公共还是私有WebSocket
+ * 当有两个WebSocket连接时使用
+ */
 const PRIVATE_CHANNELS = [
   'account',
   'positions',
@@ -70,8 +119,9 @@ const PRIVATE_CHANNELS = [
 ];
 
 /**
- * The following channels only support the new business wss endpoint:
- * https://www.okx.com/help-center/changes-to-v5-api-websocket-subscription-parameter-and-url
+ * 仅支持新商业WebSocket端点的频道列表
+ * 
+ * 参考：https://www.okx.com/help-center/changes-to-v5-api-websocket-subscription-parameter-and-url
  */
 const BUSINESS_CHANNELS = [
   'orders-algo',
@@ -173,7 +223,14 @@ const BUSINESS_CHANNELS = [
   'index-candle6Hutc',
 ];
 
-/** Determine which WsKey (ws connection) to route an event to */
+/**
+ * 根据市场、频道类型和是否私有，确定应使用哪个WebSocket连接键值
+ * 
+ * @param market 市场类型
+ * @param channel 频道类型
+ * @param isPrivate 是否为私有连接
+ * @returns 对应的WebSocket连接键值
+ */
 export function getWsKeyForTopicChannel(
   market: APIMarket,
   channel: WsChannel,
@@ -186,6 +243,14 @@ export function getWsKeyForTopicChannel(
   return getWsKeyForMarket(market, isPrivateTopic, isBusinessChannel);
 }
 
+/**
+ * 根据市场、是否私有和是否为商业频道，确定应使用哪个WebSocket连接键值
+ * 
+ * @param market 市场类型
+ * @param isPrivate 是否为私有连接
+ * @param isBusinessChannel 是否为商业频道
+ * @returns 对应的WebSocket连接键值
+ */
 export function getWsKeyForMarket(
   market: APIMarket,
   isPrivate: boolean,
@@ -222,7 +287,14 @@ export function getWsKeyForMarket(
   }
 }
 
-/** Maps a WS key back to a WS URL */
+/**
+ * 根据WebSocket连接键值获取WebSocket URL
+ * 
+ * @param wsKey WebSocket连接键值
+ * @param wsClientOptions WebSocket客户端选项
+ * @param logger 日志记录器
+ * @returns 对应的WebSocket URL
+ */
 export function getWsUrlForWsKey(
   wsKey: WsKey,
   wsClientOptions: WebsocketClientOptions,
@@ -260,6 +332,12 @@ export function getWsUrlForWsKey(
   }
 }
 
+/**
+ * 获取每个订阅事件的最大主题数量
+ * 
+ * @param market 市场类型
+ * @returns 最大主题数量，如果为null则表示无限制
+ */
 export function getMaxTopicsPerSubscribeEvent(
   market: APIMarket,
 ): number | null {
@@ -276,6 +354,12 @@ export function getMaxTopicsPerSubscribeEvent(
   }
 }
 
+/**
+ * 判断是否为WebSocket Pong消息
+ * 
+ * @param event WebSocket事件对象
+ * @returns 是否为Pong消息
+ */
 export function isWsPong(event: unknown): boolean {
   return (
     typeof event === 'object' &&
@@ -286,16 +370,36 @@ export function isWsPong(event: unknown): boolean {
   );
 }
 
+/**
+ * WebSocket事件代码枚举
+ * 
+ * 定义OKX WebSocket API的标准响应代码
+ */
 export const WS_EVENT_CODE_ENUM = {
+  /** 成功 */
   OK: '0',
+  /** 登录失败 */
   LOGIN_FAILED: '60009',
+  /** 登录部分失败 */
   LOGIN_PARTIALLY_FAILED: '60022',
 };
 
 /**
- * #305: ws.terminate() is undefined in browsers.
- * This only works in node.js, not in browsers.
- * Does nothing if `ws` is undefined. Does nothing in browsers.
+ * 安全终止WebSocket连接
+ * 
+ * 注意：#305: ws.terminate() 在浏览器中未定义。
+ * 此函数仅在Node.js中工作，在浏览器中无效。
+ * 如果ws未定义则不执行任何操作。在浏览器中也不执行任何操作。
+ * 
+ * @param ws - WebSocket连接对象
+ * @param fallbackToClose - 如果terminate不可用，是否回退到close方法
+ * @returns boolean - 如果成功终止则返回true
+ * 
+ * 使用方式：
+ * const terminated = safeTerminateWs(wsConnection, true);
+ * if (terminated) {
+ *   console.log('WebSocket连接已安全终止');
+ * }
  */
 export function safeTerminateWs(
   ws?: WebSocket | any,
